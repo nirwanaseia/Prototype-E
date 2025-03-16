@@ -4,15 +4,63 @@
   <meta charset="UTF-8">
   <title>🎰 Gacha Harian + Jackpot 🎰</title>
   <style>
-    body { font-family: 'Arial', sans-serif; background: #222; color: #fff; text-align: center; padding: 30px; }
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #222;
+      color: #fff;
+      text-align: center;
+      padding: 30px;
+    }
     h1 { margin-bottom: 20px; }
-    .slot-container { margin: 0 auto; padding: 20px; background: #333; border-radius: 15px; width: 320px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
-    .slot { margin: 20px 0; padding: 20px; font-size: 20px; background: #111; border-radius: 10px; min-height: 60px; display: flex; align-items: center; justify-content: center; }
-    button { padding: 15px 30px; font-size: 18px; border: none; border-radius: 10px; background: #28a745; color: white; cursor: pointer; }
+    .slot-container {
+      margin: 0 auto;
+      padding: 20px;
+      background: #333;
+      border-radius: 15px;
+      width: 320px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    .slot {
+      margin: 20px 0;
+      padding: 20px;
+      font-size: 20px;
+      background: #111;
+      border-radius: 10px;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    button {
+      padding: 15px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      background: #28a745;
+      color: white;
+      cursor: pointer;
+    }
     button:disabled { background: gray; cursor: not-allowed; }
-    .jackpot { font-size: 28px; color: gold; animation: glow 1s infinite alternate; }
-    .jackpot-btn { display: inline-block; margin-top: 20px; padding: 12px 24px; font-size: 18px; border-radius: 8px; background: red; color: white; text-decoration: none; animation: glow 1s infinite alternate; }
-    @keyframes glow { from { text-shadow: 0 0 10px gold; } to { text-shadow: 0 0 20px red; } }
+    .jackpot {
+      font-size: 28px;
+      color: gold;
+      animation: glow 1s infinite alternate;
+    }
+    .jackpot-btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 24px;
+      font-size: 18px;
+      border-radius: 8px;
+      background: red;
+      color: white;
+      text-decoration: none;
+      animation: glow 1s infinite alternate;
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 10px gold; }
+      to { text-shadow: 0 0 20px red; }
+    }
   </style>
 </head>
 <body>
@@ -25,19 +73,22 @@
 </div>
 
 <script>
+  // ================== ATUR HADIAH + PERSENTASE DISINI =====================
   const prizes = [
     { text: "Try Again!", percentage: 40 },  
     { text: "Maybe It Is Not Yet Time?!", percentage:30 }, 
     { text: "So Close", percentage: 25 }, 
   ];
   const jackpot = { text: "You Got The SECRET!!!", percentage: 5 }; 
-  const jackpotLink = "https://contoh-link-jackpot.com"; 
+  const jackpotLink = "https://contoh-link-jackpot.com"; // GANTI link jackpot
+  // ========================================================================
 
   const slot = document.getElementById('slot');
   const button = document.getElementById('spinBtn');
   const jackpotBtnContainer = document.getElementById('jackpotBtnContainer');
-  let todayKey = '';
+  let todayKey = ''; // Untuk kunci localStorage harian
 
+  // Fungsi ambil waktu dunia via timeapi.io
   async function getCurrentDateGMT() {
     try {
       const response = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=Asia/Jakarta');
@@ -50,9 +101,11 @@
     }
   }
 
+  // Cek apakah sudah gacha hari ini
   async function checkGachaToday() {
     const today = await getCurrentDateGMT();
-    if (!today) return;
+    if (!today) return; // Stop jika gagal ambil waktu
+
     todayKey = 'gacha_' + today;
     if (localStorage.getItem(todayKey)) {
       slot.innerText = "⚠️ Kamu sudah gacha hari ini. Coba lagi besok!";
@@ -63,25 +116,31 @@
     }
   }
 
+  // Fungsi dapatkan hadiah berdasarkan persentase
   function getRandomPrizeWithJackpot() {
     const rand = Math.random() * 100;
-    if (rand < jackpot.percentage) return { prize: jackpot.text, isJackpot: true };
+    if (rand < jackpot.percentage) {
+      return { prize: jackpot.text, isJackpot: true };
+    }
+
     let cumulative = 0;
     for (let prize of prizes) {
       cumulative += prize.percentage;
       if (rand < cumulative) return { prize: prize.text, isJackpot: false };
     }
-    return { prize: prizes[prizes.length - 1].text, isJackpot: false };
+    return { prize: prizes[prizes.length - 1].text, isJackpot: false }; // fallback
   }
 
+  // Fungsi animasi dan gacha
   function startGacha() {
     button.disabled = true;
-    jackpotBtnContainer.innerHTML = "";
+    jackpotBtnContainer.innerHTML = ""; // Reset tombol jackpot
     let count = 0;
     const maxSpin = 20;
+
     const interval = setInterval(() => {
       const tempPrize = getRandomPrizeWithJackpot();
-      slot.innerText = tempPrize.prize;
+      slot.innerText = tempPrize.prize; // Animasi slot
       count++;
       if (count >= maxSpin) {
         clearInterval(interval);
@@ -92,12 +151,14 @@
         } else {
           slot.innerText = "🎉 " + finalResult.prize + " 🎉";
         }
-        localStorage.setItem(todayKey, 'done');
+        localStorage.setItem(todayKey, 'done'); // Simpan status gacha hari ini
       }
     }, 100);
   }
 
+  // Jalankan pengecekan saat halaman dibuka
   checkGachaToday();
+
 </script>
 
 </body>
