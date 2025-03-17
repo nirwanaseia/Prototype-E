@@ -159,6 +159,22 @@
   // Jalankan pengecekan saat halaman dibuka
   checkGachaToday();
 
+  <script>
+  // Blok klik kanan
+  document.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+  }, false);
+
+  // Blok tombol F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U (View Source)
+  document.onkeydown = function (e) {
+    if (
+      e.keyCode === 123 || // F12
+      (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || // Ctrl+Shift+I or Ctrl+Shift+J
+      (e.ctrlKey && e.keyCode === 85) // Ctrl+U
+    ) {
+      return false;
+    }
+  };
 </script>
 
 </body>
