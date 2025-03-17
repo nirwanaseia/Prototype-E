@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+  <meta http-equiv="X-Frame-Options" content="DENY"> 
+  <meta http-equiv="X-Content-Type-Options" content="nosniff"> 
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=()">
+
   <title>🎰 Gacha Harian + Jackpot 🎰</title>
   <style>
     body {
@@ -150,7 +155,7 @@
           slot.innerHTML = `<div class="jackpot">${finalResult.prize}</div>`;
           jackpotBtnContainer.innerHTML = `<a class="jackpot-btn" href="${jackpotLink}" target="_blank">🎉 Klaim Hadiah Jackpot 🎉</a>`;
         } else {
-          slot.innerText = "🎉 " + finalResult.prize + " 🎉";
+          slot.innerText = " < " + finalResult.prize + " > ";
         }
         localStorage.setItem(todayKey, 'done'); // Simpan status gacha hari ini
       }
